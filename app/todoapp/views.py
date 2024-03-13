@@ -7,51 +7,52 @@ from rest_framework import status
 
 
 # Create your views here.
-@api_view(['GET'])
-def getData(request):
-    app = Task.objects.all()
-    serializer = TaskSerializer(app, many=True)
-    message = "the server is running and printing data "
-    return Response(serializer.data, status=status.HTTP_200_OK)
+class Views:
+    @api_view(['GET'])
+    def getData(request):
+        app = Task.objects.all()
+        serializer = TaskSerializer(app, many=True)
+        message = "the server is running and printing data "
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
-@api_view(['POST'])
-def postData(request):
-    print("request is: ", request)
-    serializer = TaskSerializer(data=request.data)
+    @api_view(['POST'])
+    def postData(request):
+        print("request is: ", request)
+        serializer = TaskSerializer(data=request.data)
 
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-    message = 'post request executed beautifully'
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        message = 'post request executed beautifully'
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(['PUT'])
-def putData(request, pk):
-    try:
-        task = Task.objects.get(pk=pk)
-    except Task.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+    @api_view(['PUT'])
+    def putData(request, pk):
+        try:
+            task = Task.objects.get(pk=pk)
+        except Task.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
-    serializer = TaskSerializer(task, data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer = TaskSerializer(task, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(['Delete'])
-def deleteData(request, pk):
-    try:
-        task = Task.objects.get(pk=pk)
-        print(task.pk)
-        print(task.name)
-    except task.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+    @api_view(['Delete'])
+    def deleteData(request, pk):
+        try:
+            task = Task.objects.get(pk=pk)
+            print(task.pk)
+            print(task.name)
+        except task.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
-    task.delete()
-    return Response(status=status.HTTP_204_NO_CONTENT)
+        task.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
-@api_view(['GET'])
-def searchData(request):
-    app = Task.objects.filter(name__icontains=request.data)
-    serizalizer = TaskSerializer(app, many=True)
-    return Response(serizalizer.data)
+    @api_view(['GET'])
+    def searchData(request):
+        app = Task.objects.filter(name__icontains=request.data)
+        serizalizer = TaskSerializer(app, many=True)
+        return Response(serizalizer.data)
