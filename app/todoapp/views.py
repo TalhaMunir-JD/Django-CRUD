@@ -5,14 +5,13 @@ from .models import Task
 from .serializers import TaskSerializer
 from rest_framework import status
 
-
+#list wise views - detail views-objectwise
 # Create your views here.
 class Views:
     @api_view(['GET'])
     def getData(request):
         app = Task.objects.all()
         serializer = TaskSerializer(app, many=True)
-        message = "the server is running and printing data "
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     @api_view(['POST'])
@@ -30,6 +29,7 @@ class Views:
     def putData(request, pk):
         try:
             task = Task.objects.get(pk=pk)
+            print(task)
         except Task.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -49,7 +49,7 @@ class Views:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         task.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_200_OK)
 
     @api_view(['GET'])
     def searchData(request):
